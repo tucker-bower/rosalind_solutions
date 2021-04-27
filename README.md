@@ -1,2 +1,4 @@
-# Rosalind_Ruby
-An aggregation of my solutions thus far to the Rosalind problems and functions that will be useful for solving future problems.
+# rosalind_problems
+My solutions for the Rosalind bioinformatics problems 
+
+[rosalind.info](http://rosalind.info/problems/tree-view/)
