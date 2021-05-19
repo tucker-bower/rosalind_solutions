@@ -15,6 +15,15 @@ def fasta_hash_inator(filename)
     return fasta_hash
 end
 
+# Options / arguments / parameters parser parsing
+require 'optparse'
+
+options = {}
+OptionParser.new do |opt|
+  opt.on('--list1 FILENAME') { |o| options[:list1] = o }
+  opt.on('--lIst2 FILENAME') { |o| options[:list2] = o }
+end.parse!
+
 
 #####   GENERALLY HELPFUL CODE   ######
 
