@@ -17,6 +17,6 @@ protein_string.chars.each { |acid|
 }
 
 possibilities = 3 # possibilities begins at 3 because there are 3 stop codons
-codons.each { |codon| possibilities *= codon }
+codons.each { |codon| possibilities = (possibilities * codon) % 1_000_000}
 
-p possibilities % 1_000_000
+p possibilities 
