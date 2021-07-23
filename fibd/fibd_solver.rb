@@ -5,7 +5,6 @@ nm_file = 'rosalind_fibd.txt'
 nm_file = 'rosalind_fibd.txt'
 nm = File.readlines(nm_file)[0]
 nandm = nm.split
-# could split on whitespace to one liner get these values
 nm_re = nm.match /([0-9]+)\s([0-9]+)/
 
 N = nm_re.captures[0].to_i # Number of months to simulate for

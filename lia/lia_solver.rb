@@ -26,4 +26,4 @@ for i in n..individuals
     prob += binomial(individuals, i) * 0.25 ** i * 0.75 ** (individuals - i)
 end
 
-p prob
+## Find all unique values within individuals
