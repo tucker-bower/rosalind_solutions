@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v5.js"></script>
+
+<!-- Create a div where the graph will take place -->
+<div id="sigs_chart"></div>
+
+<script>
+        // text wrapping
+        function wrap(text, width) {
+            text.each(function () {
+                var text = d3.select(this),
+                    words = text.text().split(/\s+/).reverse(),
+                    word,
+                    line = [],
+                    lineNumber = 0,
+                    lineHeight = 1.1, // ems
+                    x = text.attr("x"),
+                    y = text.attr("y"),
+                    dy = 0, //parseFloat(text.attr("dy")),
+                    tspan = text.text(null)
+                        .append("tspan")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .attr("dy", dy + "em");
+                while (word = words.pop()) {
+                    line.push(word);
+                    tspan.text(line.join(" "));
+                    if (tspan.node().getComputedTextLength() > width) {
+                        line.pop();
+                        tspan.text(line.join(" "));
+                        line = [word];
+                        tspan = text.append("tspan")
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                            .text(word);
+                    }
+                }
+            });
+        }
+
+    // set the dimensions and margins of the graph
+    var margin = { top: 10, right: 30, bottom: 20, left: 50 },
+        width = 1000 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+    // append the svg object to the body of the page
+    var svg = d3.select("#sigs_chart")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+    // Parse the Data
+    d3.csv('https://raw.githubusercontent.com/tucker-bower/rosalind_solutions/main/dna/sbs_signatures_filtered.csv')
+            .then(function (data) {
+                // data is now whole data set
+                // y axis
+                console.log(data)
+                const yScale = d3.scaleLinear()
+                    .range([height, 0])
+                    .domain([0, data[0].relative_exposure]);
+
+                svg.append('g')
+                    .call(d3.axisLeft(yScale));
+
+                // x axis
+                const xScale = d3.scaleBand()
+                    .range([0, width])
+                    .domain(data.map((d) => d.sig_id))
+                    .padding(0.4)
+
+                svg.append('g')
+                    .attr('transform', `translate(0, ${height})`)
+                    .call(d3.axisBottom(xScale));
+                
+                //bars
+                const barGroups = svg.selectAll()
+                    .data(data)
+                    .enter()
+                    .append('g')
+
+                svg.selectAll()
+                    .data(data)
+                    .enter()
+                    .append('rect')
+                    .attr('x', (d) => xScale(d.sig_id))
+                    .attr('y', (d) => yScale(d.relative_exposure))
+                    .attr('height', (d) => height - yScale(d.relative_exposure))
+                    .attr('width', xScale.bandwidth())
+                    .on('mouseenter', function (actual, i) {
+                        d3.selectAll('.value')
+                            .attr('opacity', 0)
+
+                        d3.select(this)
+                            .transition()
+                            .duration(300)
+                            .attr('opacity', 0.6)
+                            .attr('x', (d) => xScale(d.sig_id) - 5)
+                            .attr('width', xScale.bandwidth() + 10)
+
+                        const y = yScale(actual.relative_exposure)
+
+                        svg.append('text')
+                            .attr('class', 'information')
+                            .attr('x', (width -  650))
+                            .attr('y', 10)
+                            .text("Aetiology: " + actual.aetiology)
+                            .call(wrap, 300); // wrap the text in <= 300 pixels
+                        
+                        svg.append('text')
+                            .attr('class', 'information')
+                            .attr('x', (width - 310))
+                            .attr('y', 10)
+                            .text("Comments: " + actual.comments)
+                            .call(wrap, 300); // wrap the text in <= 300 pixels
+        
+                        // append text as a paragraph under the svg
+                        // const para = document.createElement("p")
+                        // const node = document.createTextNode(actual.aetiology);
+                        // para.appendChild(node);
+                        // const element = document.getElementById("sigs_chart");
+                        // element.appendChild(para);
+
+                    })
+                    // get rid of info on mouseleave
+                    .on('mouseleave', function () {
+                        d3.selectAll('.value')
+                            .attr('opacity', 1)
+
+                        d3.select(this)
+                            .transition()
+                            .duration(300)
+                            .attr('opacity', 1)
+                            .attr('x', (d) => xScale(d.sig_id))
+                            .attr('width', xScale.bandwidth())
+
+                        svg.selectAll('.information').remove()
+                    })
+        })
+</script>
