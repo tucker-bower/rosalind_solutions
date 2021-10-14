@@ -112,6 +112,14 @@ def revc(seq)
     return revc
 end
 
+def kmerize(dna, k)
+    kmers = []
+    for i in 0..(dna.length - k)
+        kmers.append dna[i..k+i - 1]
+    end
+    return kmers
+end
+
 #Hash of Amino-Acid masses
 MASSES = {
 'A' => 71.03711,

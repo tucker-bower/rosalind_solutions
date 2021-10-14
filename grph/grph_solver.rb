@@ -16,7 +16,7 @@ def fasta_hash_inator(filename)
     return fasta_hash
 end
 
-fasta_hash = fasta_hash_inator('rosalind_grph.txt')
+fasta_hash = fasta_hash_inator('example_data.txt')
 
 suffix_prefix_hash = {}
 

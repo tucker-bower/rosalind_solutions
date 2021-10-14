@@ -16,6 +16,21 @@ def fasta_hash_inator(filename)
     return fasta_hash
 end
 
-fasta_hash = fasta_hash_inator('rosalind_long.txt')
+fasta_hash = fasta_hash_inator('rosalind_long_unit_test.txt')
 
-print fasta_hash.values.
+dna_test = "ATGACTAGAT"
+
+def kmerize(dna, k)
+    kmers = []
+    for i in 0..(dna.length - k)
+        kmers.append dna[i..k+i - 1]
+    end
+    return kmers
+end
+
+for sticky in fasta_hash.values
+    puts sticky.length
+end
+
+### The plan
+# Kmerize each read.
